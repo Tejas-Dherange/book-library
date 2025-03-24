@@ -1,0 +1,34 @@
+# Ignore Node.js dependencies (if using any)
+node_modules/
+package-lock.json
+pnpm-lock.yaml
+yarn.lock
+
+# Ignore API keys and credentials
+.env
+config.json
+
+# Ignore build artifacts
+dist/
+build/
+*.zip
+
+# Ignore VS Code and JetBrains IDE settings
+.vscode/
+.idea/
+
+# Ignore OS-specific files
+.DS_Store
+Thumbs.db
+
+# Ignore logs and debugging files
+logs/
+*.log
+
+# Ignore Chrome extension cache and local storage
+chrome-extension/
+chrome-debug.log
+
+# Ignore user-specific settings
+*.local
+*.bak
