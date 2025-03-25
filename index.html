@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="./output.css" />
   </head>
   <body class="">
-    <div class="hero px-10 flex gap-14 justify-center w-full mx-auto">
+    <div class="hero px-10 flex gap-40 justify-center mx-auto p-3 bg-gray-500 text-black">
       <h1 class="text-5xl text-center">Book Library</h1>
       <input type="checkbox" checked="checked" class="toggle" />
       <input
@@ -19,16 +19,16 @@
       <select
         name="sort"
         id="sort"
-        class="bg-black cursor-pointer p-2 rounded-2xl text-white"
+        class="bg-black cursor-pointer px-4 p-2 rounded-2xl text-white"
       >
         <option value="date">Date</option>
-        <option value="ascending">Ascending</option>
-        <option value="descending">Descending</option>
+        <option value="ascending">A-Z</option>
+        <option value="descending">Z-A</option>
       </select>
     </div>
     <div class="main">
       <div
-        class="book-list mt-5 p-1 flex gap-12 w-[98vw] flex-wrap justify-center"
+        class="book-list mt-5 p-1 items-center flex gap-12 w-[98vw] flex-wrap justify-center"
         id="book-list"
       >
     
