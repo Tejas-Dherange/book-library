@@ -7,7 +7,7 @@ const sortBtn = document.getElementById("sort");
 
 let page = 1;
 
-// Fetching data from the server
+// Fetching data from the api
 const fetchData = async () => {
   const response = await fetch(
     `https://api.freeapi.app/api/v1/public/books?page=${page}&limit=10`
@@ -19,9 +19,8 @@ const fetchData = async () => {
 // Displaying data on the webpage
 const displayData = async () => {
   try {
-    const data = await fetchData(); // Wait for data to be fetched
-    books.innerHTML = ""; // Clear existing content before injecting new data
-
+    const data = await fetchData();
+    books.innerHTML = "";
     data.data.data.forEach((book) => {
       const bookItem = document.createElement("a");
       if (toggleView.hasAttribute("checked")) {
@@ -29,35 +28,32 @@ const displayData = async () => {
           "book-item",
           "p-5",
           "w-[300px]",
-          "h-[400px]",
+          "h-[450px]",
           "border",
-          "border-gray-300",
+          "border-gray-200",
           "rounded-lg",
           "shadow-lg",
           "flex",
           "flex-col",
-          "justify-center",
+          "justify-between",
           "items-center",
-          "rounded-lg",
-          "shadow-md", // Similar to box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
           "overflow-hidden",
-          "m-4", // Equivalent to margin: 16px;
+          "m-4",
           "transition",
-          "duration-200",
+          "duration-300",
           "transform",
-          "hover:scale-105", // Slightly increases size on hover
-          "hover:shadow-lg",
-         "bg-gradient-to-r",
-          "from-gray-500",
-          "to-gray-300"
+          "hover:scale-105",
+          "hover:shadow-2xl",
+          "bg-white",
+          "hover:border-blue-300"
         );
       } else {
         bookItem.classList.add(
           "book-item",
-          "w-[45%]",
+          "w-[50%]",
           "p-5",
           "border",
-          "border-gray-300",
+          "border-gray-200",
           "rounded-lg",
           "shadow-lg",
           "flex",
@@ -67,9 +63,7 @@ const displayData = async () => {
           "hover:shadow-xl",
           "transition-shadow",
           "duration-300",
-          "bg-gradient-to-r",
-          "from-gray-500",
-          "to-gray-300"
+          "hover:border-blue-300"
         );
       }
       bookItem.setAttribute("href", book.volumeInfo.infoLink);
@@ -78,25 +72,24 @@ const displayData = async () => {
         book.volumeInfo.imageLinks?.thumbnail || "/api/placeholder/150/200";
 
       bookItem.innerHTML = `
-        <img src="${thumbnail}" class="mx-auto" width="150" height="200" alt="${
+        <img src="${thumbnail}" class="mx-auto mb-4" width="150" height="200" alt="${
         book.volumeInfo.title || "Book cover"
       }" class="object-contain rounded-md shadow-md">
         
-      <div>
-
-        <div class="mt-3 text-center">
-            <h3 id="bookTitle" class="text-lg font-bold text-gray-800">${
+      <div class="text-center w-full">
+        <div>
+            <h3 id="bookTitle" class="text-lg font-bold text-gray-800 mb-1">${
               book.volumeInfo.title || "Untitled"
             }</h3>
             
-            <p class="text-sm text-gray-900">By: ${
+            <p class="text-sm text-gray-600 mb-1">By: ${
               book.volumeInfo.authors?.join(", ") || "Unknown Author"
             }</p>
-            <p class="text-xs text-gray-800">${
+            <p class="text-xs text-gray-500">${
               book.volumeInfo.publisher || "Unknown Publisher"
-            } |<span id="publishDate"> ${
+            } | <span id="publishDate">${
         book.volumeInfo.publishedDate || "N/A"
-      } </span></p>
+      }</span></p>
         </div>
         
         <div class="mt-3 flex flex-wrap justify-center text-xs text-gray-600 gap-2">
@@ -123,7 +116,7 @@ const displayData = async () => {
                 : ""
             }
         </div>
-        </div>
+      </div>
   `;
 
       books.appendChild(bookItem);
@@ -137,15 +130,15 @@ const displayData = async () => {
 
 // Call displayData when page loads
 displayData();
-console.log("data");
-console.log(books);
+// console.log("data");
+// console.log(books);
 
 //toggle between grid and list view
 
 toggleView.addEventListener("click", () => {
   const bookCard = document.querySelectorAll(".book-item");
-  console.log("jbfvb", bookCard);
-  console.log(bookCard);
+  // console.log("jbfvb", bookCard);
+  // console.log(bookCard);
   // books.classList.toggle("flex-col");
 
   if (toggleView.hasAttribute("checked")) {
@@ -155,11 +148,11 @@ toggleView.addEventListener("click", () => {
   }
   bookCard.forEach((card) => {
     card.classList.toggle("flex-col");
-    card.classList.toggle("w-[45%]");
+    card.classList.toggle("w-[50%]");
     card.classList.toggle("w-[300px]");
-    card.classList.toggle("h-[400px]",);
+    card.classList.toggle("h-[400px]");
 
-    console.log(card);
+    // console.log(card);
   });
 
   toggleView.innerHTML = books.classList.contains("grid")
@@ -219,7 +212,7 @@ sortBtn.addEventListener("change", (e) => {
   //sorting by date
   if (val == "date") {
     const bookCard = document.querySelectorAll(".book-item");
-    console.log(bookCard[0]);
+    // console.log(bookCard[0]);
     const DateArray = Array.from(bookCard);
     DateArray.sort((a, b) => {
       const dateA = new Date(
@@ -235,12 +228,12 @@ sortBtn.addEventListener("change", (e) => {
     DateArray.forEach((card) => {
       books.appendChild(card);
     });
-    console.log(DateArray);
+    // console.log(DateArray);
   }
   //sorting by ascending alphabetical order
   if (val == "ascending") {
     const bookCard = document.querySelectorAll(".book-item");
-    console.log(bookCard[0]);
+    // console.log(bookCard[0]);
     const DateArray = Array.from(bookCard);
     DateArray.sort((a, b) => {
       const target1 = a.querySelector("#bookTitle").textContent.trim();
@@ -252,13 +245,13 @@ sortBtn.addEventListener("change", (e) => {
     DateArray.forEach((card) => {
       books.appendChild(card);
     });
-    console.log(DateArray);
+    // console.log(DateArray);
   }
-  
+
   //sorting by descending alphabetical order
   if (val == "descending") {
     const bookCard = document.querySelectorAll(".book-item");
-    console.log(bookCard[0]);
+    // console.log(bookCard[0]);
     const DateArray = Array.from(bookCard);
     DateArray.sort((a, b) => {
       const target1 = a.querySelector("#bookTitle").textContent.trim();
@@ -270,6 +263,6 @@ sortBtn.addEventListener("change", (e) => {
     DateArray.forEach((card) => {
       books.appendChild(card);
     });
-    console.log(DateArray);
+    // console.log(DateArray);
   }
 });
