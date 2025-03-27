@@ -21,104 +21,123 @@ const displayData = async () => {
   try {
     const data = await fetchData();
     books.innerHTML = "";
+    
     data.data.data.forEach((book) => {
       const bookItem = document.createElement("a");
-      if (toggleView.hasAttribute("checked")) {
-        bookItem.classList.add(
-          "book-item",
-          "p-5",
-          "w-[300px]",
-          "h-[450px]",
-          "border",
-          "border-gray-200",
-          "rounded-lg",
-          "shadow-lg",
-          "flex",
-          "flex-col",
-          "justify-between",
-          "items-center",
-          "overflow-hidden",
-          "m-4",
-          "transition",
-          "duration-300",
-          "transform",
-          "hover:scale-105",
-          "hover:shadow-2xl",
-          "bg-white",
-          "hover:border-blue-300"
-        );
-      } else {
-        bookItem.classList.add(
-          "book-item",
-          "w-[50%]",
-          "p-5",
-          "border",
-          "border-gray-200",
-          "rounded-lg",
-          "shadow-lg",
-          "flex",
-          "justify-center",
-          "items-center",
-          "bg-white",
-          "hover:shadow-xl",
-          "transition-shadow",
-          "duration-300",
-          "hover:border-blue-300"
-        );
-      }
+
+      // Base styles (common to both views)
+      const baseClasses = [
+        "book-item",
+        "p-4",
+        "border",
+        "border-gray-200",
+        "rounded-lg",
+        "shadow-lg",
+        "flex",
+        "bg-white",
+        "transition",
+        "duration-300",
+        "hover:shadow-xl",
+        "hover:border-blue-300"
+      ];
+
+      // Grid view styling
+      const gridClasses = [
+        ...baseClasses,
+        "w-[calc(100%-1rem)]",  // Full width for better responsiveness
+        "sm:w-[48%]",           // Two items per row on small screens
+        "md:w-[32%]",           // Three items per row on medium screens
+        "lg:w-[24%]",           // Four items per row on large screens
+        "h-auto",
+        "min-w-[250px]",        // Prevents shrinking too much
+        "max-w-[400px]",        // Prevents oversized items
+        "flex-col",
+        "justify-between",
+        "items-center",
+        "mb-4",
+        "transform",
+        "hover:scale-105"
+      ];
+
+      // List view styling
+      const listClasses = [
+        ...baseClasses,
+        "w-full",
+        "flex-row",
+        "space-x-4",
+        "items-start",
+        "p-3",
+        "sm:p-4",
+        "sm:gap-6",
+        "hover:scale-100" // Prevents unintended scaling in list view
+      ];
+
+      // Apply class based on view mode
+      bookItem.classList.add(...(toggleView.hasAttribute("checked") ? gridClasses : listClasses));
+
+      // Set book link
       bookItem.setAttribute("href", book.volumeInfo.infoLink);
 
-      const thumbnail =
-        book.volumeInfo.imageLinks?.thumbnail || "/api/placeholder/150/200";
+      // Get book thumbnail
+      const thumbnail = book.volumeInfo.imageLinks?.thumbnail || "/api/placeholder/150/200";
 
-      bookItem.innerHTML = `
-        <img src="${thumbnail}" class="mx-auto mb-4" width="150" height="200" alt="${
-        book.volumeInfo.title || "Book cover"
-      }" class="object-contain rounded-md shadow-md">
-        
-      <div class="text-center w-full">
-        <div>
-            <h3 id="bookTitle" class="text-lg font-bold text-gray-800 mb-1">${
-              book.volumeInfo.title || "Untitled"
-            }</h3>
-            
-            <p class="text-sm text-gray-600 mb-1">By: ${
-              book.volumeInfo.authors?.join(", ") || "Unknown Author"
-            }</p>
-            <p class="text-xs text-gray-500">${
-              book.volumeInfo.publisher || "Unknown Publisher"
-            } | <span id="publishDate">${
-        book.volumeInfo.publishedDate || "N/A"
-      }</span></p>
-        </div>
-        
-        <div class="mt-3 flex flex-wrap justify-center text-xs text-gray-600 gap-2">
-            ${
-              book.volumeInfo.pageCount
-                ? `<span class="bg-blue-100 text-blue-800 px-2 py-1 rounded-md">${book.volumeInfo.pageCount} Pages</span>`
-                : ""
-            }
-            ${
-              book.volumeInfo.industryIdentifiers?.[0]?.identifier
-                ? `<span class="bg-green-100 text-green-800 px-2 py-1 rounded-md">ISBN: ${book.volumeInfo.industryIdentifiers[0].identifier}</span>`
-                : ""
-            }
-            ${
-              book.volumeInfo.averageRating
-                ? `<span class="bg-yellow-100 text-yellow-800 px-2 py-1 rounded-md">Rating: ⭐ ${
-                    book.volumeInfo.averageRating
-                  } (${book.volumeInfo.ratingsCount || 0})</span>`
-                : ""
-            }
-            ${
-              book.volumeInfo.language
-                ? `<span class="bg-gray-200 px-2 py-1 rounded-md">${book.volumeInfo.language.toUpperCase()}</span>`
-                : ""
-            }
-        </div>
-      </div>
-  `;
+      // Function to render book details
+      const renderBookDetails = () => {
+        const isGrid = toggleView.hasAttribute("checked");
+        return `
+          <img 
+            src="${thumbnail}" 
+            class="${isGrid 
+              ? 'w-[120px] sm:w-[150px] h-[180px] sm:h-[200px] mb-4 object-cover' 
+              : 'w-[80px] sm:w-[100px] h-[120px] sm:h-[150px] mr-4 object-cover'
+            } rounded-md shadow-md"
+            alt="${book.volumeInfo.title || "Book cover"}"
+          >
 
+          <div class="flex-grow ${isGrid ? 'text-center' : 'text-left'}">
+            <h3 
+              id="bookTitle" 
+              class="text-lg sm:text-xl font-bold text-gray-800 ${isGrid ? 'mb-1' : 'mb-2'}"
+            >
+              ${book.volumeInfo.title || "Untitled"}
+            </h3>
+
+            <p class="text-sm text-gray-600 ${isGrid ? 'mb-1' : 'mb-2'}">
+              By: ${book.volumeInfo.authors?.join(", ") || "Unknown Author"}
+            </p>
+
+            <p class="text-xs text-gray-500">
+              ${book.volumeInfo.publisher || "Unknown Publisher"} | 
+              <span id="publishDate">${book.volumeInfo.publishedDate || "N/A"}</span>
+            </p>
+
+            <div class="mt-3 flex flex-wrap ${isGrid ? 'justify-center' : 'justify-start'} text-xs text-gray-600 gap-2">
+              ${book.volumeInfo.pageCount ? 
+                `<span class="bg-blue-100 text-blue-800 px-2 py-1 rounded-md">
+                  ${book.volumeInfo.pageCount} Pages
+                </span>` : ""}
+              ${book.volumeInfo.industryIdentifiers?.[0]?.identifier ? 
+                `<span class="bg-green-100 text-green-800 px-2 py-1 rounded-md">
+                  ISBN: ${book.volumeInfo.industryIdentifiers[0].identifier}
+                </span>` : ""}
+              ${book.volumeInfo.averageRating ? 
+                `<span class="bg-yellow-100 text-yellow-800 px-2 py-1 rounded-md">
+                  Rating: ⭐ ${book.volumeInfo.averageRating} 
+                  (${book.volumeInfo.ratingsCount || 0})
+                </span>` : ""}
+              ${book.volumeInfo.language ? 
+                `<span class="bg-gray-200 px-2 py-1 rounded-md">
+                  ${book.volumeInfo.language.toUpperCase()}
+                </span>` : ""}
+            </div>
+          </div>
+        `;
+      };
+
+      // Insert book details
+      bookItem.innerHTML = renderBookDetails();
+
+      // Append book item to container
       books.appendChild(bookItem);
     });
 
@@ -127,6 +146,7 @@ const displayData = async () => {
     console.error("Error fetching books:", error);
   }
 };
+
 
 // Call displayData when page loads
 displayData();
