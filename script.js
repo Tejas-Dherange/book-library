@@ -4,7 +4,7 @@ const pageCount = document.getElementById("pageCount");
 const prevBtn = document.getElementById("prevBtn");
 const nextBtn = document.getElementById("nextBtn");
 const sortBtn = document.getElementById("sort");
-
+const isGridView = toggleView.hasAttribute("checked");
 let page = 1;
 
 // Fetching data from the api
@@ -154,28 +154,93 @@ displayData();
 // console.log(books);
 
 //toggle between grid and list view
-
 toggleView.addEventListener("click", () => {
-  const bookCard = document.querySelectorAll(".book-item");
-  // console.log("jbfvb", bookCard);
-  // console.log(bookCard);
-  // books.classList.toggle("flex-col");
-
+  const bookCards = document.querySelectorAll(".book-item");
+  
   if (toggleView.hasAttribute("checked")) {
     toggleView.removeAttribute("checked");
   } else {
     toggleView.setAttribute("checked", "checked");
   }
-  bookCard.forEach((card) => {
-    card.classList.toggle("flex-col");
-    card.classList.toggle("w-[50%]");
-    card.classList.toggle("w-[300px]");
-    card.classList.toggle("h-[400px]");
 
-    // console.log(card);
+  bookCards.forEach((card) => {
+    // Grid view classes
+    const gridClasses = [
+      "flex-col",
+      "w-[calc(100%-1rem)]",
+      "sm:w-[48%]",
+      "md:w-[32%]",
+      "lg:w-[24%]",
+      "items-center",
+      "text-center",
+      "min-w-[250px]",
+      "max-w-[400px]",
+      "transform",
+      "hover:scale-105"
+    ];
+
+    // List view classes
+    const listClasses = [
+      "flex-row",
+      "w-full",
+      "items-start",
+      "text-left",
+      "space-x-4",
+      "hover:scale-100"
+    ];
+
+    // Toggle image classes
+    const gridImageClasses = [
+      "w-[120px]", 
+      "sm:w-[150px]", 
+      "h-[180px]", 
+      "sm:h-[200px]", 
+      "mb-4"
+    ];
+    const listImageClasses = [
+      "w-[80px]", 
+      "sm:w-[100px]", 
+      "h-[120px]", 
+      "sm:h-[150px]", 
+      "mr-4"
+    ];
+
+    // Toggle details container classes
+    const gridDetailsClasses = [
+      "text-center", 
+      "items-center"
+    ];
+    const listDetailsClasses = [
+      "text-left", 
+      "items-start"
+    ];
+
+    // Get image and details elements
+    const cardImage = card.querySelector('img');
+    const detailsContainer = card.querySelector('div[class*="flex-grow"]');
+
+    // Determine if it's grid or list view
+    const isGridView = toggleView.hasAttribute("checked");
+
+    // Remove existing view-specific classes
+    card.classList.remove(...gridClasses, ...listClasses);
+    cardImage.classList.remove(...gridImageClasses, ...listImageClasses);
+    detailsContainer.classList.remove(...gridDetailsClasses, ...listDetailsClasses);
+
+    // Add  classes based on view
+    if (isGridView) {
+      card.classList.add(...gridClasses);
+      cardImage.classList.add(...gridImageClasses);
+      detailsContainer.classList.add(...gridDetailsClasses);
+    } else {
+      card.classList.add(...listClasses);
+      cardImage.classList.add(...listImageClasses);
+      detailsContainer.classList.add(...listDetailsClasses);
+    }
   });
 
-  toggleView.innerHTML = books.classList.contains("grid")
+  // Update toggle button icon
+  toggleView.innerHTML = isGridView
     ? `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
 </svg>`
@@ -184,8 +249,8 @@ toggleView.addEventListener("click", () => {
 </svg>`;
 });
 
-//search functionality
 
+//search functionality
 const searchInput = document.querySelector("#search");
 searchInput.addEventListener("input", (e) => {
   const bookCard = document.querySelectorAll(".book-item");
