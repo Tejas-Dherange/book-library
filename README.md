@@ -151,3 +151,52 @@ if __name__=="__main__":
             print("❌ Invalid choice! Please try again.")
     
         
+import os import sys import time 
+ 
+def execute_with_execve():     path = "/usr/bin/python3"      argv = [path, "second.py"]     envp = os.environ 
+    try: 
+        os.execve(path, argv, envp)     except OSError as e: 
+        print(f"Error executing command: {e}") 
+        sys.exit(1) 
+ 
+file_name = os.path.basename(__file__) 
+print(f"PID: {os.getpid()} | MSG: Hello, this is inital process ({file_name}).") execute_with_execve() 
+print("This line will never be executed!") 
+ 
+ 
+second.py – CODE – 
+import os  
+file_name = os.path.basename(__file__) 
+print(f"PID: {os.getpid()} | MSG: Hello, this is another process ({file_name}).") 
+OUTPUT – 
+  
+3. Orphan Process – import os import sys import time def create_orphan():     pid = os.fork() 
+ 
+    if pid == 0: 
+        print(f"PID {os.getpid()} | Child is Running....")         for i in range(4):             print(f"Parent of this process {os.getpid()} is => {os.getppid()}")             time.sleep(2)         print(f"PID {os.getpid()} | Child is Exiting....")     else: 
+        print(f"PID {os.getpid()} | Parent is Running....")         print(f"PID {os.getpid()} | Parent is Exiting....")         sys.exit(0) 
+create_orphan() 
+OUTPUT – 
+  
+4. Zombie State Process – CODE – 
+import os import sys import time def create_zombie(): 
+    pid = os.fork()     if pid == 0: 
+        print(f"PID {os.getpid()} | Child is Running....")         print(f"PID {os.getpid()} | Child is Exiting....")     else: 
+        print(f"PID {os.getpid()} | Parent is Running....")         time.sleep(10)         print(f"PID {os.getpid()} | Parent is Exiting....")         sys.exit(0) 
+create_zombie() 
+ 
+
+
+5.wait() System Call – CODE
+import os  
+pid = os.fork() 
+if pid != 0:
+    status = os.wait() 
+    print("In parent process-") 
+    print("Terminated child's process ID:", status[0]) 
+    print("Exit status of child process:",status[1]) 
+else: 
+    print("In Child process-") 
+    print("Process ID:", os.getpid()) 
+    print("Exiting...")
+    os._exit(0)
