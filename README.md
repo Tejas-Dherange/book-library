@@ -51,3 +51,103 @@ ans=sjf(process)
 print()
 for i in ans:
     print(i,ans[i])
+
+
+
+
+    //addres book
+    
+import os
+
+FILE_NAME="adress.txt"
+def create_address_book():
+    with open(FILE_NAME,"w") as file:
+        file.write("Name, Email, phone number\n")
+
+def view_addres_book():
+    if not os.path.exists(FILE_NAME):
+        print("Addrres book not found ❌")
+        return
+    with open(FILE_NAME,"r") as file:
+        print(file.read())
+        
+    
+def insert_record():
+    name=input("enter name")
+    email=input("enter email")
+    phone=input("enter phone")
+    with open(FILE_NAME,"a") as file:
+        file.write(f"{name} {email} {phone}\n")
+        
+
+def delete_record():
+    if not os.path.exists(FILE_NAME):
+        print("addresboook does not exists")
+        return
+    name_to_delete=input("enter name")
+    lines=[]
+    found=False
+    with open(FILE_NAME,"r") as file:
+        lines=file.readlines()
+    with open(FILE_NAME,"w") as file:
+        for line in lines:
+            if not line.startswith(name_to_delete):
+                file.write(line)
+            else:
+                found=True
+        if(found):
+            print("record deleted ✅")
+        else:
+            print("❌ not found")
+            
+def modify_record():
+    if not os.path.exists(FILE_NAME):
+        print("address book des not exists")
+        return
+    name_to_modify=input("enter name")
+    line=[]
+    found=False
+    with open(FILE_NAME,"r") as file:
+        lines=file.readlines()
+    with open(FILE_NAME,"w") as file:
+        for line in lines:
+            if line.startswith(name_to_modify):
+                found=True
+                email=input("enter email")
+                phone=input("enter phione")
+                file.write(f"{name_to_modify} {email} {phone}\n")
+            else:
+                file.write(line)
+    if(found):
+        print("record updated successfully")
+    else:
+        print("record not found")
+if __name__=="__main__":
+    while True:
+        print("\n===== Address Book =====")
+        print("1. Create Address Book")
+        print("2. View Address Book")
+        print("3. Insert Record")
+        print("4. Delete a Record")
+        print("5. Modify a Record")
+        print("6. Exit")
+        
+        choice = input("Enter your choice: ")
+        
+        if choice == "1":
+            create_address_book()
+        elif choice == "2":
+            view_addres_book()
+        elif choice == "3":
+            insert_record()
+        elif choice == "4":
+            delete_record()
+        elif choice == "5":
+            modify_record()
+        elif choice == "6":
+            print("👋 Exiting...")
+            break
+        else:
+            print("❌ Invalid choice! Please try again.")
+    
+        
